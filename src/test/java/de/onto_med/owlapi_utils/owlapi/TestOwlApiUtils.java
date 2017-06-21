@@ -1,4 +1,4 @@
-package owlapi_utils.owlapi;
+package de.onto_med.owlapi_utils.owlapi;
 
 import static org.junit.Assert.*;
 

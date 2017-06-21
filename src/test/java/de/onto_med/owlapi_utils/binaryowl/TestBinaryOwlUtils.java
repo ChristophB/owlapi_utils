@@ -1,4 +1,4 @@
-package owlapi_utils.binaryowl;
+package de.onto_med.owlapi_utils.binaryowl;
 
 import static org.junit.Assert.*;
 
