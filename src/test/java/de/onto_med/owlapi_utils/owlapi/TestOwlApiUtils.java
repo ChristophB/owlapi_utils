@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.XMLUtils;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -76,7 +77,7 @@ public class TestOwlApiUtils {
 		OWLClass excel = factory.getOWLClass(IRI.create("http://www.lha.org/duo#Excel"));
 		OWLClass file  = factory.getOWLClass(IRI.create("http://www.lha.org/duo#File"));
 		assertEquals("Excel", OwlApiUtils.getLabel(excel, ontology));
-		assertEquals("Missing label should result in null", null, OwlApiUtils.getLabel(file, ontology));
+		assertEquals(XMLUtils.getNCNameSuffix("http://lha.org/duo#File"), OwlApiUtils.getLabel(file, ontology));
 	}
 	
 	@Test
