@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.onto_med</groupId>
   <artifactId>owlapi_utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>OWL-API Utils</name>
   <description>Provides some convenient functions for OWL-API and BinaryOWL</description>
   <properties>
