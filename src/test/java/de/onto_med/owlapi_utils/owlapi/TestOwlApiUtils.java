@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.stream.Collectors;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -54,10 +56,13 @@ public class TestOwlApiUtils {
 		OWLClass cls       = factory.getOWLClass(IRI.create("http://www.lha.org/duo#Excel"));
 		
 		OwlApiUtils.transfereOwlClass(cls, ontology, target);
-		OWLClass cls2 = target.getClassesInSignature().iterator().next();
+		OWLClass cls2 = target.classesInSignature().iterator().next();
 		
 		assertEquals(cls, cls2);
-		assertEquals(EntitySearcher.getAnnotations(cls, ontology), EntitySearcher.getAnnotations(cls2, target));
+		assertEquals(
+			EntitySearcher.getAnnotations(cls, ontology).collect(Collectors.toList()),
+			EntitySearcher.getAnnotations(cls2, target).collect(Collectors.toList())
+		);
 	}
 	
 	@Test
