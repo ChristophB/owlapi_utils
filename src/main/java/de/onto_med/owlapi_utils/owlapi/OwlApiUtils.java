@@ -1,11 +1,11 @@
 package de.onto_med.owlapi_utils.owlapi;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
@@ -13,7 +13,6 @@ import org.semanticweb.owlapi.io.XMLUtils;
 import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxParserImpl;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -47,11 +46,11 @@ public class OwlApiUtils {
 		List<OWLClass> subClasses = new ArrayList<OWLClass>();
 		
 		if (depth < 0) return subClasses;
-		
-		for (OWLClassExpression child : EntitySearcher.getSubClasses(cls, ontology)) {
+
+		EntitySearcher.getSubClasses(cls, ontology).forEach(child -> {
 			subClasses.add(child.asOWLClass());
 			subClasses.addAll(getSubClassesRecursive(child.asOWLClass(), ontology, depth - 1));
-		}
+		});
 		
 		return subClasses;
 	}
@@ -71,11 +70,11 @@ public class OwlApiUtils {
 		OWLDataFactory factory = manager.getOWLDataFactory();
 		
 		manager.addAxiom(target, factory.getOWLDeclarationAxiom(cls));
-		manager.addAxioms(target, new HashSet<OWLAnnotationAssertionAxiom>(EntitySearcher.getAnnotationAssertionAxioms(cls, source)));
+		manager.addAxioms(target, EntitySearcher.getAnnotationAssertionAxioms(cls, source));
 		
-		for (OWLClassExpression subclass : EntitySearcher.getSuperClasses(cls, source)) {
+		EntitySearcher.getSuperClasses(cls, source).forEach(subclass -> {
 			manager.addAxiom(target, factory.getOWLSubClassOfAxiom(cls, subclass));
-		}
+		});
 	}
 	
 	/**
@@ -98,9 +97,8 @@ public class OwlApiUtils {
 	 * @param ontology an ontology
 	 * @return the HermiT reasoner
 	 */
-	@SuppressWarnings("deprecation")
 	public static OWLReasoner getHermiTReasoner(OWLOntology ontology) {
-		return new Reasoner.ReasonerFactory().createReasoner(ontology);
+		return new ReasonerFactory().createReasoner(ontology);
 	}
 	
 	/**
@@ -109,7 +107,7 @@ public class OwlApiUtils {
 	 * @return the label
 	 */
 	public static String getLabel(OWLEntity entity, OWLOntology ontology) {
-		for (OWLAnnotation a : EntitySearcher.getAnnotationObjects(entity, ontology)) {
+		for (OWLAnnotation a : EntitySearcher.getAnnotationObjects(entity, ontology).collect(Collectors.toList())) {
 			if (a.getProperty().isLabel() && a.getValue() instanceof OWLLiteral)
 				return ((OWLLiteral) a.getValue()).getLiteral();
 		}
@@ -142,32 +140,35 @@ public class OwlApiUtils {
 	 * @param ontology the ontology
 	 * @return number of entities
 	 */
-	public static int countEntities(Class<?> cls, OWLOntology ontology) {
+	public static long countEntities(Class<?> cls, OWLOntology ontology) {
 		if (cls.equals(OWLObjectProperty.class)) {
-			return ontology.getObjectPropertiesInSignature(Imports.INCLUDED).size();
+			return ontology.objectPropertiesInSignature(Imports.INCLUDED).count();
 		} else if (cls.equals(OWLLogicalAxiom.class)) {
 			return ontology.getLogicalAxiomCount(Imports.INCLUDED);
 		} else if (cls.equals(OWLIndividual.class)) {
-			return ontology.getIndividualsInSignature(Imports.INCLUDED).size();
+			return ontology.individualsInSignature(Imports.INCLUDED).count();
 		} else if (cls.equals(OWLDataProperty.class)) {
-			return ontology.getDataPropertiesInSignature(Imports.INCLUDED).size();
+			return ontology.dataPropertiesInSignature(Imports.INCLUDED).count();
 		} else if (cls.equals(OWLClass.class)) {
-			return ontology.getClassesInSignature(Imports.INCLUDED).size();
+			return ontology.classesInSignature(Imports.INCLUDED).count();
 		} else if (cls.equals(OWLAxiom.class)) {
 			return ontology.getAxiomCount(Imports.INCLUDED);
 		} else if (cls.equals(OWLAnnotationProperty.class)) {
-			return ontology.getAnnotationPropertiesInSignature(Imports.INCLUDED).size();
+			return ontology.annotationPropertiesInSignature(Imports.INCLUDED).count();
 		} else {
 			return 0;
 		}
 	}
 	
-	
-	
-	private static BidirectionalShortFormProvider getShortFormProvider(OWLOntology ontology) {
+	/**
+	 * Returns a ShortFormProvider for the given OWLOntology.
+	 * @param ontology an OWLOntology object
+	 * @return ShortFormProvider
+	 */
+	public static BidirectionalShortFormProvider getShortFormProvider(OWLOntology ontology) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
         return new BidirectionalShortFormProviderAdapter(
-        	manager.getOntologies(),
+        	manager.ontologies().collect(Collectors.toList()),
         	new ManchesterOWLSyntaxPrefixNameShortFormProvider(manager.getOntologyFormat(ontology))
         );
     }

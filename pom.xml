@@ -7,7 +7,7 @@
   <description>Provides some convenient functions for OWL-API and BinaryOWL</description>
   <properties>
     <binaryowl.version>2.0.1</binaryowl.version>
-    <owlapi.version>4.3.1</owlapi.version>
+    <owlapi.version>5.1.1</owlapi.version>
     <protege.version>3.5.1.1</protege.version>
     <hermit.version>1.3.8.413</hermit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
