@@ -30,7 +30,7 @@ public class BinaryOwlUtils {
 	 */
 	public static OWLOntologyManager getOwlOntologyManager() {
 		OWLOntologyManager manager            = OWLManager.createOWLOntologyManager();
-		Set<OWLParserFactory> parserFactories = new HashSet<OWLParserFactory>();
+		Set<OWLParserFactory> parserFactories = new HashSet<>();
 		
 		parserFactories.add(new BinaryOWLOntologyDocumentParserFactory());
 		manager.setOntologyParsers(parserFactories);
@@ -55,7 +55,7 @@ public class BinaryOwlUtils {
 				new BinaryOWLOntologyDocumentPreamble(di).getFileFormatVersion()
 			);
 			
-			ArrayList<String> strings = new ArrayList<String>();
+			ArrayList<String> strings = new ArrayList<>();
 			
 			boolean newWord = true;
 			int current;
@@ -77,9 +77,9 @@ public class BinaryOwlUtils {
 			e.printStackTrace();
 		} finally {
 			try {
-				di.close();
-				bi.close();
-			} catch (IOException e) { }
+				if (di != null) di.close();
+				if (bi != null) bi.close();
+			} catch (IOException ignored) { }
 		}
 		
 		return null;
