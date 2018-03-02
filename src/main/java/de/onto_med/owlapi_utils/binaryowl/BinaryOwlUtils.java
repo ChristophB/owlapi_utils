@@ -18,7 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 
 /**
- * This class provides some convenient class methods for BinaryOWL filehandling.
+ * This class provides some convenient class methods for BinaryOWL file handling.
  * @author Christoph Beger
  *
  */
@@ -39,8 +39,8 @@ public class BinaryOwlUtils {
 	}
 	
 	/**
-	 * Returns the IRI of a binaryowl ontology or null.
-	 * @param path The path to the binaryowl file
+	 * Returns the IRI of a BinaryOWL ontology or null.
+	 * @param path The path to the BinaryOWL file
 	 * @return IRI as String or null
 	 */
 	public static String getOntologyIriFromBinaryOwl(String path) {
