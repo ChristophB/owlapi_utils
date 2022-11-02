@@ -26,7 +26,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - run: mvn -B install --no-transfer-progress -s .mvn-ci.xml --file pom.xml
+    - run: mvn -B install --no-transfer-progress --file pom.xml
 
   publish:
     needs: build
@@ -52,7 +52,7 @@ jobs:
       run: mvn versions:set "-DnewVersion=${{ env.project_version }}"
 
     - name: Build with Maven
-      run: mvn -B package -s .mvn-ci.xml --file pom.xml
+      run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn -B --no-transfer-progress deploy -s $GITHUB_WORKSPACE/settings.xml
