@@ -44,6 +44,14 @@ jobs:
         distribution: 'adopt'
         server-id: github
         settings-path: ${{ github.workspace }}
+
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
         
     - name: Get version
       run: echo project_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) | sed -r 's/-SNAPSHOT//' >> $GITHUB_ENV
@@ -52,7 +60,7 @@ jobs:
       run: mvn versions:set "-DnewVersion=${{ env.project_version }}"
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B --no-transfer-progress package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven
       run: mvn -B --no-transfer-progress deploy -s $GITHUB_WORKSPACE/settings.xml
