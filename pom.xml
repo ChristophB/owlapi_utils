@@ -13,6 +13,13 @@
         <hermit.version>1.3.8.500</hermit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub ChristophB Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/ChristophB/top-phenotypic-query</url>
+        </repository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
